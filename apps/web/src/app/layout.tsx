@@ -28,6 +28,12 @@ export default function RootLayout(props: RootLayoutProps) {
                 <Link href="/">Home</Link>
               </li>
               <li>
+                <Link href="/users">Users</Link>
+              </li>
+              <li>
+                <Link href="/login">Login</Link>
+              </li>
+              <li>
                 <Link href="/profile">Profile</Link>
               </li>
             </ul>
