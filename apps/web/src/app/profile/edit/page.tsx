@@ -1,10 +1,11 @@
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
+import EditProfileForm from '../../_components/EditProfileForm';
 
 export const dynamic = 'force-dynamic';
 
-async function Profile() {
+async function EditProfilePage() {
   const supabase = createServerComponentClient({
     cookies,
   });
@@ -15,13 +16,17 @@ async function Profile() {
 
   return (
     <div>
-      <h1>Profile</h1>
-      <pre>{JSON.stringify(profile, null, 2)}</pre>
+      <h1>Edit Profile</h1>
+      <EditProfileForm
+        defaultValues={{
+          name: profile.name,
+        }}
+      />
       <p>
-        <Link href="/profile/edit">Edit profile</Link>
+        <Link href="..">back</Link>
       </p>
     </div>
   );
 }
 
-export default Profile;
+export default EditProfilePage;
