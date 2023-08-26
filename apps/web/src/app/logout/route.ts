@@ -1,12 +1,13 @@
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { Database } from '../../../../../packages/supabase/database.types';
 
 const dynamic = 'force-dynamic';
 
-async function POST(request: Request) {
+async function POST(request: NextRequest) {
   const requestUrl = new URL(request.url);
-  const supabase = createRouteHandlerClient({
+  const supabase = createRouteHandlerClient<Database>({
     cookies,
   });
 

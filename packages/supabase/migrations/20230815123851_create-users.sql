@@ -1,6 +1,7 @@
 create table public.users (
   id uuid not null references auth.users on delete cascade,
   name varchar,
+  gender varchar,
 
   primary key (id)
 );

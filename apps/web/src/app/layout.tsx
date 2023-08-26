@@ -1,10 +1,12 @@
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
+import { cookies } from 'next/headers';
 import Link from 'next/link';
 import { ReactNode } from 'react';
 import './globals.css';
+import { Database } from '../../../../packages/supabase/database.types';
 
-const inter = Inter({ subsets: ['latin'] });
+export const dynamic = 'force-dynamic';
 
 export const metadata: Metadata = {
   title: 'Create Next App',
@@ -15,12 +17,18 @@ interface RootLayoutProps {
   children: ReactNode;
 }
 
-export default function RootLayout(props: RootLayoutProps) {
+export default async function RootLayout(props: RootLayoutProps) {
   const { children } = props;
+  const supabase = createServerComponentClient<Database>({
+    cookies,
+  });
+  const {
+    data: { session },
+  } = await supabase.auth.getSession();
 
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body>
         <header>
           <nav>
             <ul>
@@ -30,12 +38,20 @@ export default function RootLayout(props: RootLayoutProps) {
               <li>
                 <Link href="/users">Users</Link>
               </li>
-              <li>
-                <Link href="/login">Login</Link>
-              </li>
-              <li>
-                <Link href="/profile">Profile</Link>
-              </li>
+              {session ? (
+                <li>
+                  <Link href="/profile">Profile</Link>
+                  <ul>
+                    <li>
+                      <Link href="/logout">Logout</Link>
+                    </li>
+                  </ul>
+                </li>
+              ) : (
+                <li>
+                  <Link href="/login">Login</Link>
+                </li>
+              )}
             </ul>
           </nav>
         </header>
