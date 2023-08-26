@@ -1,17 +1,18 @@
 'use client';
 
-import { Auth as SupabaseAuth } from '@supabase/auth-ui-react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { Auth as SupabaseAuth } from '@supabase/auth-ui-react';
+import { Database } from '../../../../../packages/supabase/database.types';
 
-const supabaseClient = createClientComponentClient();
+const supabaseClient = createClientComponentClient<Database>();
 
 function Auth() {
   return (
     <SupabaseAuth
       onlyThirdPartyProviders
       providers={['github']}
+      redirectTo={`${window.location.origin}/auth/callback`}
       supabaseClient={supabaseClient}
-      redirectTo="http://localhost:3000/auth/callback"
     />
   );
 }
