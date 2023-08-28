@@ -1,10 +1,53 @@
-import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
+import { getAuthUser, getUserById } from '@/app/repositories/user';
+import {
+  createServerActionClient,
+  createServerComponentClient,
+} from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
-import { notFound } from 'next/navigation';
+import Link from 'next/link';
+import { notFound, redirect } from 'next/navigation';
+import { z } from 'zod';
 import { Database } from '../../../../../../packages/supabase/database.types';
-import User from '../../_components/User';
+import {
+  followUserById,
+  getFollowersAndCountById,
+  getFollowing,
+  getFollowingsAndCountById,
+  unfollowUserById,
+} from '../../repositories/following';
 
 export const dynamic = 'force-dynamic';
+
+const formDataSchema = z.object({
+  followingId: z.string(),
+  followedId: z.string(),
+});
+
+async function follow(data: FormData) {
+  'use server';
+
+  const { followingId, followedId } = formDataSchema.parse(Object.fromEntries(data.entries()));
+  const supabase = createServerActionClient<Database>({
+    cookies,
+  });
+
+  await followUserById(supabase, followingId, followedId);
+
+  redirect(`/users/${followedId}`);
+}
+
+async function unfollow(data: FormData) {
+  'use server';
+
+  const { followingId, followedId } = formDataSchema.parse(Object.fromEntries(data.entries()));
+  const supabase = createServerActionClient<Database>({
+    cookies,
+  });
+
+  await unfollowUserById(supabase, followingId, followedId);
+
+  redirect(`/users/${followedId}`);
+}
 
 interface UserPageProps {
   params: {
@@ -19,16 +62,90 @@ async function UserPage(props: UserPageProps) {
   const supabase = createServerComponentClient<Database>({
     cookies,
   });
-  const { data: user } = await supabase.from('users').select().eq('id', userId).single();
+  const authUser = await getAuthUser(supabase);
+
+  if (!authUser) {
+    redirect('/login');
+  }
+
+  const [
+    user,
+    { followings, count: followingsCount },
+    { followers, count: followersCount },
+    following,
+  ] = await Promise.all([
+    getUserById(supabase, userId),
+    getFollowingsAndCountById(supabase, userId),
+    getFollowersAndCountById(supabase, userId),
+    getFollowing(supabase, authUser.id, userId),
+  ]);
 
   if (!user) {
     notFound();
   }
 
+  const isOwnProfile = userId === authUser.id;
+  const isFollowing = following !== null;
+
   return (
     <div>
       <h1>User</h1>
-      <User {...user} />
+      <div>
+        <ul>
+          <li>Name: {user.name}</li>
+          <li>Gender: {user.gender}</li>
+        </ul>
+      </div>
+      {!isOwnProfile && (
+        <div>
+          {isFollowing ? (
+            <form action={unfollow}>
+              <input type="hidden" name="followingId" value={authUser.id} />
+              <input type="hidden" name="followedId" value={userId} />
+              <button type="submit">Unfollow</button>
+            </form>
+          ) : (
+            <form action={follow}>
+              <input type="hidden" name="followingId" value={authUser.id} />
+              <input type="hidden" name="followedId" value={userId} />
+              <button type="submit">Follow</button>
+            </form>
+          )}
+        </div>
+      )}
+
+      {followings && (
+        <>
+          <h3>Following ({followingsCount})</h3>
+          <ul>
+            {followings.map((following) => {
+              const { name, id } = following.followed_id;
+
+              return (
+                <li key={id}>
+                  <Link href={`/users/${id}`}>{name}</Link>
+                </li>
+              );
+            })}
+          </ul>
+        </>
+      )}
+      {followers && (
+        <>
+          <h3>Followers ({followersCount})</h3>
+          <ul>
+            {followers.map((follower) => {
+              const { name, id } = follower.following_id;
+
+              return (
+                <li key={id}>
+                  <Link href={`/users/${id}`}>{name}</Link>
+                </li>
+              );
+            })}
+          </ul>
+        </>
+      )}
     </div>
   );
 }

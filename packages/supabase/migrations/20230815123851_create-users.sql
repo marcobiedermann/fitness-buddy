@@ -2,6 +2,8 @@ create table public.users (
   id uuid not null references auth.users on delete cascade,
   name varchar,
   gender varchar,
+  created_at timestamp with time zone not null default now(),
+  updated_at timestamp with time zone not null default now(),
 
   primary key (id)
 );
@@ -37,3 +39,6 @@ $$;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute procedure public.handle_new_user();
+
+create trigger handle_users_updated_at before update on users
+  for each row execute procedure moddatetime (updated_at);

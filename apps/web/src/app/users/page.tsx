@@ -4,6 +4,7 @@ import { redirect } from 'next/navigation';
 import { z } from 'zod';
 import { Database } from '../../../../../packages/supabase/database.types';
 import Users from '../_components/Users';
+import { getUsers } from '../repositories/user';
 
 export const dynamic = 'force-dynamic';
 
@@ -21,14 +22,9 @@ async function UsersPage(props: UsersPageProps) {
   const supabase = createServerComponentClient<Database>({
     cookies,
   });
-
-  const query = supabase.from('users').select();
-
-  if (gender !== 'all') {
-    query.eq('gender', gender);
-  }
-
-  const { data: users } = await query.limit(20);
+  const users = await getUsers(supabase, {
+    gender,
+  });
 
   if (!users) {
     redirect('/');
