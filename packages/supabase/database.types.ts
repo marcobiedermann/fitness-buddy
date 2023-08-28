@@ -3,36 +3,61 @@ export type Json = string | number | boolean | null | { [key: string]: Json | un
 export interface Database {
   public: {
     Tables: {
-      countries: {
+      following: {
         Row: {
-          id: number;
-          name: string;
+          created_at: string;
+          followed_id: string;
+          following_id: string;
+          updated_at: string;
         };
         Insert: {
-          id?: number;
-          name: string;
+          created_at?: string;
+          followed_id: string;
+          following_id: string;
+          updated_at?: string;
         };
         Update: {
-          id?: number;
-          name?: string;
+          created_at?: string;
+          followed_id?: string;
+          following_id?: string;
+          updated_at?: string;
         };
-        Relationships: [];
+        Relationships: [
+          {
+            foreignKeyName: 'following_followed_id_fkey';
+            columns: ['followed_id'];
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+          {
+            foreignKeyName: 'following_following_id_fkey';
+            columns: ['following_id'];
+            referencedRelation: 'users';
+            referencedColumns: ['id'];
+          },
+        ];
       };
       users: {
         Row: {
-          gender: string;
+          created_at: string;
+          gender: string | null;
           id: string;
-          name: string;
+          name: string | null;
+          updated_at: string;
         };
         Insert: {
-          gender?: string;
+          created_at?: string;
+          gender?: string | null;
           id: string;
-          name?: string;
+          name?: string | null;
+          updated_at?: string;
         };
         Update: {
+          created_at?: string;
           gender?: string | null;
           id?: string;
           name?: string | null;
+          updated_at?: string;
         };
         Relationships: [
           {

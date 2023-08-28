@@ -2,7 +2,7 @@ import Link from 'next/link';
 
 interface UserProps {
   id: string;
-  name: string;
+  name: string | null;
 }
 
 function User(props: UserProps) {

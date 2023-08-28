@@ -1,9 +1,9 @@
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
-import { Database } from '../../../../../packages/supabase/database.types';
 import { notFound, redirect } from 'next/navigation';
-import User from '../_components/User';
+import { Database } from '../../../../../packages/supabase/database.types';
+import { getAuthUser, getProfileById } from '../repositories/user';
 
 export const dynamic = 'force-dynamic';
 
@@ -11,15 +11,14 @@ async function Profile() {
   const supabase = createServerComponentClient<Database>({
     cookies,
   });
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+
+  const user = await getAuthUser(supabase);
 
   if (!user) {
     redirect('/login');
   }
 
-  const { data: profile } = await supabase.from('users').select().eq('id', user!.id).single();
+  const profile = await getProfileById(supabase, user.id);
 
   if (!profile) {
     notFound();
@@ -28,7 +27,12 @@ async function Profile() {
   return (
     <div>
       <h1>Profile</h1>
-      <User {...profile} />
+      <div>
+        <ul>
+          <li>Name: {profile.name}</li>
+          <li>Gender: {profile.gender}</li>
+        </ul>
+      </div>
       <p>
         <Link href="/profile/edit">Edit profile</Link>
       </p>
