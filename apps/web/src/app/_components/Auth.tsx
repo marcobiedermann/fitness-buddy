@@ -10,7 +10,7 @@ function Auth() {
   return (
     <SupabaseAuth
       onlyThirdPartyProviders
-      providers={['github']}
+      providers={['github', 'twitter']}
       redirectTo={`${window.location.origin}/auth/callback`}
       supabaseClient={supabaseClient}
     />
