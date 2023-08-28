@@ -5,7 +5,7 @@ import { Database } from '../../../../../packages/supabase/database.types';
 
 const dynamic = 'force-dynamic';
 
-async function POST(request: NextRequest) {
+async function GET(request: NextRequest) {
   const requestUrl = new URL(request.url);
   const supabase = createRouteHandlerClient<Database>({
     cookies,
@@ -18,4 +18,4 @@ async function POST(request: NextRequest) {
   });
 }
 
-export { POST, dynamic };
+export { GET, dynamic };
