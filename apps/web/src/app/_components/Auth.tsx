@@ -11,7 +11,7 @@ function Auth() {
     <SupabaseAuth
       onlyThirdPartyProviders
       providers={['github', 'twitter']}
-      redirectTo={`${window.location.origin}/auth/callback`}
+      redirectTo={process.env.NEXT_PUBLIC_AUTH_CALLBACK_URL}
       supabaseClient={supabaseClient}
     />
   );
