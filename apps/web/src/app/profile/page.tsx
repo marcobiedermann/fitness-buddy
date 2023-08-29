@@ -3,6 +3,7 @@ import { cookies } from 'next/headers';
 import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 import { Database } from '../../../../../packages/supabase/database.types';
+import UserDetails from '../_components/UserDetails';
 import { getAuthUser, getProfileById } from '../repositories/user';
 
 export const dynamic = 'force-dynamic';
@@ -27,12 +28,7 @@ async function Profile() {
   return (
     <div>
       <h1>Profile</h1>
-      <div>
-        <ul>
-          <li>Name: {profile.name}</li>
-          <li>Gender: {profile.gender}</li>
-        </ul>
-      </div>
+      <UserDetails {...profile} />
       <p>
         <Link href="/profile/edit">Edit profile</Link>
       </p>

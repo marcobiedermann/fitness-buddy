@@ -39,24 +39,30 @@ export interface Database {
       };
       users: {
         Row: {
+          avatar_url: string | null;
           created_at: string;
+          date_of_birth: string | null;
           gender: string | null;
           id: string;
-          name: string | null;
+          name: string;
           updated_at: string;
         };
         Insert: {
+          avatar_url?: string | null;
           created_at?: string;
+          date_of_birth?: string | null;
           gender?: string | null;
           id: string;
-          name?: string | null;
+          name: string;
           updated_at?: string;
         };
         Update: {
+          avatar_url?: string | null;
           created_at?: string;
+          date_of_birth?: string | null;
           gender?: string | null;
           id?: string;
-          name?: string | null;
+          name?: string;
           updated_at?: string;
         };
         Relationships: [

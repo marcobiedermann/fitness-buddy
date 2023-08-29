@@ -43,7 +43,7 @@ async function UsersPage(props: UsersPageProps) {
               id="all"
               value="all"
               name="gender"
-              defaultChecked={gender === 'female'}
+              defaultChecked={gender === 'all'}
             />
           </div>
           <div>
@@ -64,6 +64,16 @@ async function UsersPage(props: UsersPageProps) {
               value="female"
               name="gender"
               defaultChecked={gender === 'female'}
+            />
+          </div>
+          <div>
+            <label htmlFor="other">Other</label>
+            <input
+              type="radio"
+              id="other"
+              value="other"
+              name="gender"
+              defaultChecked={gender === 'other'}
             />
           </div>
         </fieldset>
