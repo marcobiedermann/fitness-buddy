@@ -1,6 +1,8 @@
 create table public.users (
   id uuid not null references auth.users on delete cascade,
-  name varchar,
+  name varchar not null,
+  avatar_url text,
+  date_of_birth date,
   gender varchar,
   created_at timestamp with time zone not null default now(),
   updated_at timestamp with time zone not null default now(),
@@ -29,8 +31,12 @@ language plpgsql
 security definer set search_path = public
 as $$
 begin
-  insert into public.users (id)
-  values (new.id);
+  insert into public.users (id, name, avatar_url)
+  values (
+    new.id,
+    new.raw_user_meta_data->>'name',
+    new.raw_user_meta_data->>'avatar_url'
+  );
   return new;
 end;
 $$;

@@ -43,13 +43,19 @@ async function getUserById(supabase: SupabaseClient<Database>, userId: string) {
 async function updateUserById(
   supabase: SupabaseClient<Database>,
   userId: string,
-  props: { name: string },
+  props: {
+    dateOfBirth: string;
+    gender: string;
+    name: string;
+  },
 ) {
-  const { name } = props;
+  const { dateOfBirth, gender, name } = props;
 
   await supabase
     .from('users')
     .update({
+      date_of_birth: dateOfBirth,
+      gender,
       name,
     })
     .eq('id', userId);

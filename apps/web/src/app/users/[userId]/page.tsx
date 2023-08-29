@@ -8,6 +8,7 @@ import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 import { z } from 'zod';
 import { Database } from '../../../../../../packages/supabase/database.types';
+import UserDetails from '../../_components/UserDetails';
 import {
   followUserById,
   getFollowersAndCountById,
@@ -90,12 +91,7 @@ async function UserPage(props: UserPageProps) {
   return (
     <div>
       <h1>User</h1>
-      <div>
-        <ul>
-          <li>Name: {user.name}</li>
-          <li>Gender: {user.gender}</li>
-        </ul>
-      </div>
+      <UserDetails {...user} />
       {!isOwnProfile && (
         <div>
           {isFollowing ? (
