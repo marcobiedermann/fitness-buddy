@@ -56,17 +56,23 @@ async function EditProfilePage() {
   return (
     <div>
       <h1>Edit Profile</h1>
-      <form action={updateUser}>
+      <form action={updateUser} className="form">
         <input type="hidden" name="userId" value={user.id} />
-        <div>
+        <div className="form__field">
           <label htmlFor="name">Name</label>
-          <input type="text" id="name" name="name" defaultValue={profile.name} />
+          <input
+            type="text"
+            id="name"
+            name="name"
+            defaultValue={profile.name}
+            className="form__input"
+          />
         </div>
         <div>
           <fieldset>
             <legend>Gender</legend>
-            <div>
-              <div>
+            <div className="form__fields">
+              <div className="form__field">
                 <label htmlFor="male">Male</label>
                 <input
                   type="radio"
@@ -76,7 +82,7 @@ async function EditProfilePage() {
                   defaultChecked={profile.gender === 'male'}
                 />
               </div>
-              <div>
+              <div className="form__field">
                 <label htmlFor="female">Female</label>
                 <input
                   type="radio"
@@ -86,7 +92,7 @@ async function EditProfilePage() {
                   defaultChecked={profile.gender === 'female'}
                 />
               </div>
-              <div>
+              <div className="form__field">
                 <label htmlFor="other">Other</label>
                 <input
                   type="radio"
@@ -99,7 +105,7 @@ async function EditProfilePage() {
             </div>
           </fieldset>
         </div>
-        <div>
+        <div className="form__field">
           <label htmlFor="dateOfBirth">Date of Birth</label>
           <input
             type="date"
@@ -108,10 +114,13 @@ async function EditProfilePage() {
             {...(profile.date_of_birth && {
               defaultValue: profile.date_of_birth,
             })}
+            className="form__input"
           />
         </div>
         <div>
-          <button type="submit">Save</button>
+          <button type="submit" className="button button--primary">
+            Save
+          </button>
         </div>
       </form>
       <p>

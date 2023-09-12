@@ -9,7 +9,7 @@ function User(props: UserProps) {
   const { id, name } = props;
 
   return (
-    <div>
+    <div className="user">
       <h3>
         <Link href={`/users/${id}`}>{name}</Link>
       </h3>

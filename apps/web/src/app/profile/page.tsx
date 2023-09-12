@@ -27,7 +27,6 @@ async function Profile() {
 
   return (
     <div>
-      <h1>Profile</h1>
       <UserDetails {...profile} />
       <p>
         <Link href="/profile/edit">Edit profile</Link>
