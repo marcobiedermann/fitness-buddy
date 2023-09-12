@@ -90,7 +90,6 @@ async function UserPage(props: UserPageProps) {
 
   return (
     <div>
-      <h1>User</h1>
       <UserDetails {...user} />
       {!isOwnProfile && (
         <div>
@@ -98,13 +97,17 @@ async function UserPage(props: UserPageProps) {
             <form action={unfollow}>
               <input type="hidden" name="followingId" value={authUser.id} />
               <input type="hidden" name="followedId" value={userId} />
-              <button type="submit">Unfollow</button>
+              <button type="submit" className="button button--secondary">
+                Unfollow
+              </button>
             </form>
           ) : (
             <form action={follow}>
               <input type="hidden" name="followingId" value={authUser.id} />
               <input type="hidden" name="followedId" value={userId} />
-              <button type="submit">Follow</button>
+              <button type="submit" className="button button--primary">
+                Follow
+              </button>
             </form>
           )}
         </div>
@@ -112,7 +115,9 @@ async function UserPage(props: UserPageProps) {
 
       {followings && (
         <>
-          <h3>Following ({followingsCount})</h3>
+          <h3>
+            <strong>{followingsCount}</strong> Following
+          </h3>
           <ul>
             {followings.map((following) => {
               const { name, id } = following.followed_id;
@@ -128,7 +133,9 @@ async function UserPage(props: UserPageProps) {
       )}
       {followers && (
         <>
-          <h3>Followers ({followersCount})</h3>
+          <h3>
+            <strong>{followersCount}</strong> Followers
+          </h3>
           <ul>
             {followers.map((follower) => {
               const { name, id } = follower.following_id;

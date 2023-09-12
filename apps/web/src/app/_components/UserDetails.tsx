@@ -9,19 +9,18 @@ interface UserDetailsProps {
 
 function UserDetails(props: UserDetailsProps) {
   const { avatar_url, date_of_birth, gender, name } = props;
+  const age = dayjs().diff(date_of_birth, 'year');
 
   return (
-    <div>
-      <ul>
-        <li>Name: {name}</li>
-        {avatar_url && (
-          <li>
-            <img src={avatar_url} alt={name} width="64" />
-          </li>
-        )}
-        {gender && <li>Gender: {gender}</li>}
-        {date_of_birth && <li>Age: {dayjs().diff(date_of_birth, 'year')}</li>}
-      </ul>
+    <div className="user-details">
+      {avatar_url && (
+        <figure className="user-details__avatar">
+          <img src={avatar_url} alt={name} width="128" height="128" />
+        </figure>
+      )}
+      <h1 className="user-details__name">
+        {name}, {age}
+      </h1>
     </div>
   );
 }

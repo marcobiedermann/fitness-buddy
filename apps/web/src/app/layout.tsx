@@ -1,10 +1,17 @@
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
 import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
-import Link from 'next/link';
 import { ReactNode } from 'react';
-import './globals.css';
 import { Database } from '../../../../packages/supabase/database.types';
+import Header from './_components/Header';
+import Main from './_components/Main';
+import Navigation from './_components/Navigation';
+import './globals.css';
+import { Figtree } from 'next/font/google';
+
+const figtree = Figtree({
+  subsets: ['latin'],
+});
 
 export const dynamic = 'force-dynamic';
 
@@ -26,36 +33,15 @@ export default async function RootLayout(props: RootLayoutProps) {
     data: { session },
   } = await supabase.auth.getSession();
 
+  const isAuthenticated = Boolean(session);
+
   return (
     <html lang="en">
-      <body>
-        <header>
-          <nav>
-            <ul>
-              <li>
-                <Link href="/">Home</Link>
-              </li>
-              <li>
-                <Link href="/users">Users</Link>
-              </li>
-              {session ? (
-                <li>
-                  <Link href="/profile">Profile</Link>
-                  <ul>
-                    <li>
-                      <Link href="/logout">Logout</Link>
-                    </li>
-                  </ul>
-                </li>
-              ) : (
-                <li>
-                  <Link href="/login">Login</Link>
-                </li>
-              )}
-            </ul>
-          </nav>
-        </header>
-        <main>{children}</main>
+      <body className={figtree.className}>
+        <Header>
+          <Navigation isAuthenticated={isAuthenticated} />
+        </Header>
+        <Main>{children}</Main>
       </body>
     </html>
   );

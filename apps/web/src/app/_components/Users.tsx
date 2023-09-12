@@ -9,7 +9,7 @@ function Users(props: UsersProps) {
   const { users } = props;
 
   return (
-    <ul>
+    <ul className="users">
       {users.map((user) => {
         const { id } = user;
 
