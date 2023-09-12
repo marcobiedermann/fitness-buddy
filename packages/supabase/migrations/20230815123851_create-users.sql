@@ -24,6 +24,10 @@ create policy "Users can update own data."
   on users for update
   using ( auth.uid() = id );
 
+create policy "Users can delete own data."
+  on users for delete
+  using ( auth.uid() = id );
+
 -- inserts a row into public.users
 create function public.handle_new_user()
 returns trigger
@@ -45,6 +49,24 @@ $$;
 create trigger on_auth_user_created
   after insert on auth.users
   for each row execute procedure public.handle_new_user();
+
+-- deletes a row into public.users
+create function public.handle_delete_user()
+returns trigger
+language plpgsql
+security definer set search_path = public
+as $$
+begin
+  delete from auth.users
+  where auth.users.id = old.id;
+  return old;
+end;
+$$;
+
+-- trigger the function every time a user is deleted
+create trigger on_user_deleted
+  after delete on public.users
+  for each row execute procedure public.handle_delete_user();
 
 create trigger handle_users_updated_at before update on users
   for each row execute procedure moddatetime (updated_at);

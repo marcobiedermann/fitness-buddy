@@ -1,4 +1,4 @@
-import { getAuthUser, getProfileById, updateUserById } from '@/app/repositories/user';
+import { getAuthUser, updateUserById, getUserById, deleteUserById } from '@/app/repositories/user';
 import {
   createServerActionClient,
   createServerComponentClient,
@@ -11,7 +11,25 @@ import { Database } from '../../../../../../packages/supabase/database.types';
 
 export const dynamic = 'force-dynamic';
 
-const formDataSchema = z.object({
+const deleteUserFormDataSchema = z.object({
+  userId: z.string(),
+});
+
+async function deleteUser(data: FormData) {
+  'use server';
+
+  const { userId } = deleteUserFormDataSchema.parse(Object.fromEntries(data.entries()));
+  const supabase = createServerActionClient<Database>({
+    cookies,
+  });
+
+  await deleteUserById(supabase, userId);
+  await supabase.auth.signOut();
+
+  redirect('/');
+}
+
+const updateUserFormDataSchema = z.object({
   dateOfBirth: z.string(),
   gender: z.string(),
   name: z.string(),
@@ -21,7 +39,7 @@ const formDataSchema = z.object({
 async function updateUser(data: FormData) {
   'use server';
 
-  const { dateOfBirth, gender, name, userId } = formDataSchema.parse(
+  const { dateOfBirth, gender, name, userId } = updateUserFormDataSchema.parse(
     Object.fromEntries(data.entries()),
   );
   const supabase = createServerActionClient<Database>({
@@ -41,15 +59,15 @@ async function EditProfilePage() {
   const supabase = createServerComponentClient<Database>({
     cookies,
   });
-  const user = await getAuthUser(supabase);
+  const authUser = await getAuthUser(supabase);
 
-  if (!user) {
+  if (!authUser) {
     return redirect('/login');
   }
 
-  const profile = await getProfileById(supabase, user.id);
+  const user = await getUserById(supabase, authUser.id);
 
-  if (!profile) {
+  if (!user) {
     return redirect('/');
   }
 
@@ -64,7 +82,7 @@ async function EditProfilePage() {
             type="text"
             id="name"
             name="name"
-            defaultValue={profile.name}
+            defaultValue={user.name}
             className="form__input"
           />
         </div>
@@ -79,7 +97,7 @@ async function EditProfilePage() {
                   name="gender"
                   id="male"
                   value="male"
-                  defaultChecked={profile.gender === 'male'}
+                  defaultChecked={user.gender === 'male'}
                 />
               </div>
               <div className="form__field">
@@ -89,7 +107,7 @@ async function EditProfilePage() {
                   name="gender"
                   id="female"
                   value="female"
-                  defaultChecked={profile.gender === 'female'}
+                  defaultChecked={user.gender === 'female'}
                 />
               </div>
               <div className="form__field">
@@ -99,7 +117,7 @@ async function EditProfilePage() {
                   name="gender"
                   id="other"
                   value="other"
-                  defaultChecked={profile.gender === 'other'}
+                  defaultChecked={user.gender === 'other'}
                 />
               </div>
             </div>
@@ -111,8 +129,8 @@ async function EditProfilePage() {
             type="date"
             name="dateOfBirth"
             id="dateOfBirth"
-            {...(profile.date_of_birth && {
-              defaultValue: profile.date_of_birth,
+            {...(user.date_of_birth && {
+              defaultValue: user.date_of_birth,
             })}
             className="form__input"
           />
@@ -122,6 +140,11 @@ async function EditProfilePage() {
             Save
           </button>
         </div>
+      </form>
+
+      <form action={deleteUser}>
+        <input type="hidden" name="userId" value={user.id} />
+        <button type="submit">Delete Profile</button>
       </form>
       <p>
         <Link href="..">back</Link>

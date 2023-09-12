@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { notFound, redirect } from 'next/navigation';
 import { Database } from '../../../../../packages/supabase/database.types';
 import UserDetails from '../_components/UserDetails';
-import { getAuthUser, getProfileById } from '../repositories/user';
+import { getAuthUser, getUserById } from '../repositories/user';
 
 export const dynamic = 'force-dynamic';
 
@@ -13,21 +13,21 @@ async function Profile() {
     cookies,
   });
 
-  const user = await getAuthUser(supabase);
+  const authUser = await getAuthUser(supabase);
 
-  if (!user) {
+  if (!authUser) {
     redirect('/login');
   }
 
-  const profile = await getProfileById(supabase, user.id);
+  const user = await getUserById(supabase, authUser.id);
 
-  if (!profile) {
+  if (!user) {
     notFound();
   }
 
   return (
     <div>
-      <UserDetails {...profile} />
+      <UserDetails {...user} />
       <p>
         <Link href="/profile/edit">Edit profile</Link>
       </p>

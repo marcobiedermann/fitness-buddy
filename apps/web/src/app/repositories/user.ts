@@ -9,12 +9,6 @@ async function getAuthUser(supabase: SupabaseClient<Database>) {
   return user;
 }
 
-async function getProfileById(supabase: SupabaseClient<Database>, userId: string) {
-  const { data: profile } = await supabase.from('users').select().eq('id', userId).single();
-
-  return profile;
-}
-
 async function getUsers(
   supabase: SupabaseClient<Database>,
   where: { gender?: string } = {},
@@ -32,6 +26,10 @@ async function getUsers(
   const { data: users } = await query.limit(limit);
 
   return users;
+}
+
+async function deleteUserById(supabase: SupabaseClient<Database>, userId: string) {
+  await supabase.from('users').delete().eq('id', userId);
 }
 
 async function getUserById(supabase: SupabaseClient<Database>, userId: string) {
@@ -61,4 +59,4 @@ async function updateUserById(
     .eq('id', userId);
 }
 
-export { getAuthUser, getProfileById, getUsers, getUserById, updateUserById };
+export { getAuthUser, getUsers, deleteUserById, getUserById, updateUserById };

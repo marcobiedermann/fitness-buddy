@@ -2,7 +2,6 @@ create table public.following (
   following_id uuid not null references users on delete cascade,
   followed_id uuid not null references users on delete cascade,
   created_at timestamp with time zone not null default now(),
-  updated_at timestamp with time zone not null default now(),
 
   unique (following_id, followed_id)
 );

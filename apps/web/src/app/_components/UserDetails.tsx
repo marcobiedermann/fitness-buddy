@@ -8,7 +8,7 @@ interface UserDetailsProps {
 }
 
 function UserDetails(props: UserDetailsProps) {
-  const { avatar_url, date_of_birth, gender, name } = props;
+  const { avatar_url, date_of_birth, name } = props;
   const age = dayjs().diff(date_of_birth, 'year');
 
   return (
@@ -18,9 +18,7 @@ function UserDetails(props: UserDetailsProps) {
           <img src={avatar_url} alt={name} width="128" height="128" />
         </figure>
       )}
-      <h1 className="user-details__name">
-        {name}, {age}
-      </h1>
+      <h1 className="user-details__name">{[name, age].filter(Boolean).join(', ')}</h1>
     </div>
   );
 }
